@@ -198,7 +198,7 @@ func (t *tree) forEachSubstring(current *artNode, key Key, callback Callback) tr
 	for current != nil {
 		if current.isLeaf() {
 			leaf := current.leaf()
-			if leaf.prefixMatch(key) {
+			if leaf.substringMatch(key) {
 				if !callback(current) {
 					return traverseStop
 				}

@@ -2,7 +2,6 @@ package art
 
 import (
 	"bytes"
-	"fmt"
 	"math/bits"
 	"unsafe"
 )
@@ -764,7 +763,6 @@ func (l *leaf) prefixMatch(key Key) bool {
 
 func (l *leaf) substringMatch(key Key) bool {
 	if key == nil || len(l.key) > len(key) {
-		fmt.Println(len(l.key) > len(key))
 		return false
 	}
 
