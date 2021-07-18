@@ -185,6 +185,65 @@ func (t *tree) forEachPrefix(current *artNode, key Key, callback Callback) trave
 	return traverseContinue
 }
 
+func (t *tree) ForEachSubstring(key Key, callback Callback) {
+	t.forEachSubstring(t.root, key, callback)
+}
+
+func (t *tree) forEachSubstring(current *artNode, key Key, callback Callback) traverseAction {
+	if current == nil {
+		return traverseContinue
+	}
+
+	depth := uint32(0)
+	for current != nil {
+		if current.isLeaf() {
+			leaf := current.leaf()
+			if leaf.prefixMatch(key) {
+				if !callback(current) {
+					return traverseStop
+				}
+			}
+			break
+		}
+
+		if depth == uint32(len(key)) {
+			leaf := current.minimum()
+			if leaf.substringMatch(key) {
+				if t.recursiveForEach(current, callback) == traverseStop {
+					return traverseStop
+				}
+			}
+			break
+		}
+
+		node := current.node()
+		if node.prefixLen > 0 {
+			prefixLen := current.matchDeep(key, depth)
+			if prefixLen > node.prefixLen {
+				prefixLen = node.prefixLen
+			}
+
+			if prefixLen == 0 {
+				break
+			} else if depth+prefixLen == uint32(len(key)) {
+				return t.recursiveForEach(current, callback)
+
+			}
+			depth += node.prefixLen
+		}
+
+		// Find a child to recursive to
+		next := current.findChild(key.charAt(int(depth)), key.valid(int(depth)))
+		if *next == nil {
+			break
+		}
+		current = *next
+		depth++
+	}
+
+	return traverseContinue
+}
+
 // Iterator pattern
 func (t *tree) Iterator(opts ...int) Iterator {
 	options := traverseOptions(opts...)

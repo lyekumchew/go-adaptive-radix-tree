@@ -2,6 +2,7 @@ package art
 
 import (
 	"bytes"
+	"fmt"
 	"math/bits"
 	"unsafe"
 )
@@ -759,6 +760,15 @@ func (l *leaf) prefixMatch(key Key) bool {
 	}
 
 	return bytes.Compare(l.key[:len(key)], key) == 0
+}
+
+func (l *leaf) substringMatch(key Key) bool {
+	if key == nil || len(l.key) > len(key) {
+		fmt.Println(len(l.key) > len(key))
+		return false
+	}
+
+	return bytes.Compare(l.key, key[:len(l.key)]) == 0
 }
 
 // Base node methods

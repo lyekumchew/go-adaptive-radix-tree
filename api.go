@@ -97,6 +97,11 @@ type Tree interface {
 	// The callback iteration is terminated if the callback function returns false.
 	ForEachPrefix(keyPrefix Key, callback Callback)
 
+	// ForEachSubstring executes a provided callback once per leaf node that
+	// the given keyPrefix starts with leaf's key.
+	// The callback iteration is terminated if the callback function returns false.
+	ForEachSubstring(keyPrefix Key, callback Callback)
+
 	// Iterator returns an iterator for preorder traversal over leaf nodes by default.
 	// Pass TraverseXXX as an options to return an iterator for preorder traversal over all NodeXXX types.
 	Iterator(options ...int) Iterator
